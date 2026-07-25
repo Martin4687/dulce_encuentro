@@ -179,7 +179,8 @@
         <div><dt>WhatsApp</dt><dd>{{ sucursal.whatsapp }}</dd></div>
       </dl>
     </div>
-    <form class="contact-form" id="contactForm" method="POST" action="{{ url_for('contacto') }}">
+    <form class="contact-form" id="contactForm" method="POST" name="contacto" data-netlify="true">
+      <input type="hidden" name="form-name" value="contacto">
       <h3>Escríbenos</h3>
       <label for="nombre">Nombre</label>
       <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
