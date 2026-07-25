@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dulce Encuentro — ¡Nueva sucursal en Sopocachi!</title>
+<meta name="description" content="Dulce Encuentro abre su nueva sucursal en Sopocachi, La Paz. Conoce los nuevos sabores y la fecha de la gran apertura.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&family=Permanent+Marker&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-stack">
+      {% for category, message in messages %}
+        <div class="flash flash--{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span>🎉 GRAN APERTURA — SOPOCACHI</span>
+    <span>🍦 NUEVOS SABORES CADA MES</span>
+    <span>📍 AV. 6 DE AGOSTO ESQ. ASPIAZU</span>
+    <span>🎉 GRAN APERTURA — SOPOCACHI</span>
+    <span>🍦 NUEVOS SABORES CADA MES</span>
+    <span>📍 AV. 6 DE AGOSTO ESQ. ASPIAZU</span>
+  </div>
+</div>
+
+<header class="site-header">
+  <a class="brand" href="#inicio">
+    <span class="brand__mark" aria-hidden="true">
+      <svg viewBox="0 0 44 44" width="34" height="34">
+        <circle cx="22" cy="22" r="20" fill="#FF3D80"/>
+        <circle cx="16" cy="18" r="6" fill="#FFC93C"/>
+        <circle cx="28" cy="18" r="6" fill="#1FA9E1"/>
+        <circle cx="22" cy="27" r="6" fill="#FFFDF7"/>
+      </svg>
+    </span>
+    Dulce Encuentro
+  </a>
+  <nav class="site-nav" id="siteNav">
+    <a href="#sabores">Sabores</a>
+    <a href="#sucursal">Sucursal nueva</a>
+    <a href="#galeria">Galería</a>
+    <a href="#visitanos">Visítanos</a>
+  </nav>
+  <a class="btn btn--small" href="#visitanos">¡Cómo llegar!</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<main>
+
+  <section class="hero" id="inicio">
+    <div class="hero__confetti" aria-hidden="true"></div>
+    <div class="hero__content">
+      <div class="hero__text">
+        <p class="badge badge--sticker">¡Gran apertura!</p>
+        <h1>Dulce Encuentro<br>llega a <span class="highlight">Sopocachi</span></h1>
+        <p class="hero__lead">
+          Una nueva sucursal, los mismos helados artesanales de siempre — y tres
+          sabores que estrenamos solo para la apertura. Te esperamos el
+          15 de agosto.
+        </p>
+        <div class="hero__actions">
+          <a href="#sabores" class="btn btn--pink">Ver sabores nuevos</a>
+          <a href="#visitanos" class="btn btn--ghost">Cómo llegar</a>
+        </div>
+
+        <div class="countdown" id="countdown" data-target="{{ apertura_iso }}">
+          <div class="countdown__box"><span class="countdown__num" data-unit="dias">00</span><span class="countdown__label">Días</span></div>
+          <div class="countdown__box"><span class="countdown__num" data-unit="horas">00</span><span class="countdown__label">Horas</span></div>
+          <div class="countdown__box"><span class="countdown__num" data-unit="min">00</span><span class="countdown__label">Min</span></div>
+          <div class="countdown__box"><span class="countdown__num" data-unit="seg">00</span><span class="countdown__label">Seg</span></div>
+        </div>
+      </div>
+
+      <div class="hero__art">
+        <img class="hero__photo hero__photo--main" src="{{ url_for('static', filename='img/sabor-destacado.jpg') }}" alt="Helado de pistacho con salsa de frambuesa">
+        <img class="hero__photo hero__photo--small" src="{{ url_for('static', filename='img/vitrina-sabores.jpg') }}" alt="Vitrina con distintos sabores de helado">
+        <div class="hero__sticker-card">
+          <img src="{{ url_for('static', filename='img/promo-nuevos-sabores.jpg') }}" alt="Promoción de nuevos sabores: Lemon Pie, Cappuccino Granizado y Frutilla al Agua">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="stripe-divider" aria-hidden="true"></div>
+
+  <section class="sabores" id="sabores">
+    <p class="eyebrow eyebrow--center">La carta</p>
+    <h2>Sabores de la apertura</h2>
+    <p class="section-lead">
+      Estos tres sabores debutan junto con la nueva sucursal — y no van a
+      quedarse mucho tiempo en la carta.
+    </p>
+
+    <div class="sabores__grid sabores__grid--nuevos">
+      {% for sabor in sabores_nuevos %}
+      <article class="sabor-card sabor-card--nuevo">
+        <span class="ribbon">¡Nuevo!</span>
+        <div class="sabor-card__blob" style="--blob-color: {{ sabor.color }}"></div>
+        <div class="sabor-card__body">
+          <h3>{{ sabor.nombre }}</h3>
+          <p>{{ sabor.descripcion }}</p>
+          <span class="precio">Bs {{ sabor.precio }}</span>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <p class="eyebrow eyebrow--center sabores__clasicos-title">Los de siempre</p>
+    <div class="sabores__grid sabores__grid--clasicos">
+      {% for sabor in sabores_clasicos %}
+      <article class="sabor-card">
+        <div class="sabor-card__blob" style="--blob-color: {{ sabor.color }}"></div>
+        <div class="sabor-card__body">
+          <h3>{{ sabor.nombre }}</h3>
+          <p>{{ sabor.descripcion }}</p>
+          <span class="precio">Bs {{ sabor.precio }}</span>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <div class="stripe-divider stripe-divider--flip" aria-hidden="true"></div>
+
+  <section class="sucursal" id="sucursal">
+    <div class="sucursal__art">
+      <img src="{{ url_for('static', filename='img/interior-sucursal.jpg') }}" alt="Interior de la nueva sucursal de Dulce Encuentro">
+      <span class="badge badge--sticker badge--floating">Sopocachi</span>
+    </div>
+    <div class="sucursal__text">
+      <p class="eyebrow">La sucursal nueva</p>
+      <h2>Un espacio para quedarte</h2>
+      <p>
+        Después de 6 años en nuestra sucursal original, abrimos un segundo
+        local pensado para algo más que llevarte un helado: mesas altas,
+        vitrina completa a la vista, y un rincón de fotos para el primer día.
+      </p>
+      <dl class="info-list">
+        <div><dt>Dirección</dt><dd>{{ sucursal.direccion }}</dd></div>
+        <div><dt>Apertura</dt><dd>{{ sucursal.horario_apertura }}</dd></div>
+        <div><dt>Horario regular</dt><dd>{{ sucursal.horario_regular }}</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <div class="stripe-divider" aria-hidden="true"></div>
+
+  <section class="galeria" id="galeria">
+    <p class="eyebrow eyebrow--center">Galería</p>
+    <h2>Un vistazo antes de la apertura</h2>
+    <p class="section-lead">Filtra por categoría y haz clic en cualquier imagen para verla en grande.</p>
+
+    <div id="galeria-react-root" data-api="{{ url_for('api_galeria') }}">
+      <p class="galeria-fallback">Cargando galería…</p>
+    </div>
+  </section>
+
+  <div class="stripe-divider stripe-divider--flip" aria-hidden="true"></div>
+
+  <section class="visitanos" id="visitanos">
+    <div class="visitanos__info">
+      <p class="eyebrow eyebrow--light">Visítanos</p>
+      <h2>Te esperamos el 15 de agosto</h2>
+      <dl class="info-list">
+        <div><dt>Dirección</dt><dd>{{ sucursal.direccion }}</dd></div>
+        <div><dt>Horario regular</dt><dd>{{ sucursal.horario_regular }}</dd></div>
+        <div><dt>WhatsApp</dt><dd>{{ sucursal.whatsapp }}</dd></div>
+      </dl>
+    </div>
+    <form class="contact-form" id="contactForm" method="POST" action="{{ url_for('contacto') }}">
+      <h3>Escríbenos</h3>
+      <label for="nombre">Nombre</label>
+      <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+      <label for="mensaje">Mensaje</label>
+      <textarea id="mensaje" name="mensaje" rows="4" placeholder="¿Quieres reservar para la apertura? Cuéntanos" required></textarea>
+      <button type="submit" class="btn btn--pink btn--block">Enviar mensaje</button>
+    </form>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="brand brand--footer">
+    <svg viewBox="0 0 44 44" width="24" height="24" aria-hidden="true">
+      <circle cx="22" cy="22" r="20" fill="#FFC93C"/>
+      <circle cx="22" cy="22" r="10" fill="#FFFDF7"/>
+    </svg>
+    Dulce Encuentro
+  </div>
+  <p>© 2026 Dulce Encuentro. Hecho a mano en La Paz.</p>
+  <div class="social">
+    <a href="#" aria-label="Instagram">Instagram</a>
+    <a href="#" aria-label="Facebook">Facebook</a>
+    <a href="#" aria-label="WhatsApp">WhatsApp</a>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vendor/react.production.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vendor/react-dom.production.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/gallery.js') }}"></script>
+</body>
+</html>
