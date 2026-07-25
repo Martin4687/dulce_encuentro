@@ -23,7 +23,7 @@ galería con filtros y lightbox).
   stickers rotados, confetti al enviar el formulario, y un divisor a rayas
   tipo caramelo hecho en CSS puro (sin imágenes).
 
-## Cómo correrlo
+## Cómo correrlo (desarrollo local)
 
 ```bash
 python3 -m venv venv
@@ -34,19 +34,30 @@ flask --app app run --debug
 
 Abre `http://127.0.0.1:5000`.
 
+## Cómo publicarlo (Netlify)
+
+Este proyecto está preparado para desplegarse en Netlify como sitio
+estático — el comando `python freeze.py` convierte la app Flask en HTML/JSON
+puro antes de publicar. La guía completa paso a paso está en
+`GUIA-NETLIFY-GITHUB.md`.
+
+
 ## Estructura
 
 ```
 dulce-encuentro/
-├── app.py                        # Rutas HTML + API JSON (/api/sabores, /api/galeria)
+├── app.py                        # Rutas HTML + API JSON (/api/sabores.json, /api/galeria.json)
+├── freeze.py                     # Convierte la app a HTML/JSON estático (para Netlify)
+├── netlify.toml                  # Configuración de build para Netlify
 ├── requirements.txt
+├── GUIA-NETLIFY-GITHUB.md        # Guía paso a paso de despliegue
 ├── templates/
 │   └── index.html
 └── static/
     ├── css/style.css             # Todo el diseño
     ├── img/                      # Las 4 imágenes del cliente
     └── js/
-        ├── main.js               # Menú móvil, cuenta regresiva, confetti
+        ├── main.js               # Menú móvil, cuenta regresiva, confetti, envío del formulario
         ├── gallery.js            # Componente de React (galería + lightbox)
         └── vendor/                # React y ReactDOM (builds locales, sin CDN)
 ```
@@ -56,9 +67,12 @@ dulce-encuentro/
 - Los sabores y la fecha de apertura están en `app.py` (`SABORES`, `APERTURA`,
   `SUCURSAL`) — cambiarlos ahí actualiza toda la página, incluida la cuenta
   regresiva.
-- La galería (`/api/galeria`) es fácil de extender: solo agrega otro
+- La galería (`/api/galeria.json`) es fácil de extender: solo agrega otro
   diccionario a la lista `GALERIA` con una imagen nueva en `static/img/`.
 - El componente de React (`gallery.js`) está escrito sin JSX (con
   `React.createElement` directo) para que corra sin paso de build. Si más
   adelante quieres usar JSX de verdad, el siguiente paso natural es
   introducir Vite o Create React App para esa parte del frontend.
+- El formulario de contacto envía su POST a `/` a propósito (no a `/contacto`)
+  — es el patrón que usa Netlify Forms para detectar envíos en un sitio
+  estático. El detalle completo está en `GUIA-NETLIFY-GITHUB.md`.

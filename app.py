@@ -67,8 +67,15 @@ SUCURSAL = {
 }
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def inicio():
+    # El formulario de contacto envía su POST a "/" (la misma página) a
+    # propósito: es el patrón que espera Netlify Forms cuando el sitio se
+    # despliega como estático, y también funciona perfecto en local con
+    # Flask corriendo de verdad. Ver la Guía de Netlify para el detalle.
+    if request.method == "POST":
+        return _procesar_contacto()
+
     nuevos = [s for s in SABORES if s["nuevo"]]
     clasicos = [s for s in SABORES if not s["nuevo"]]
     return render_template(
@@ -80,24 +87,7 @@ def inicio():
     )
 
 
-@app.route("/api/sabores")
-def api_sabores():
-    """Alimenta al componente de React con los datos de sabores en JSON."""
-    return jsonify(SABORES)
-
-
-@app.route("/api/galeria")
-def api_galeria():
-    """Alimenta a la galería interactiva de React en JSON."""
-    galeria_con_url = [
-        {**item, "imagen": url_for("static", filename=f"img/{item['imagen']}")}
-        for item in GALERIA
-    ]
-    return jsonify(galeria_con_url)
-
-
-@app.route("/contacto", methods=["POST"])
-def contacto():
+def _procesar_contacto():
     nombre = request.form.get("nombre", "").strip()
     mensaje = request.form.get("mensaje", "").strip()
 
@@ -107,6 +97,22 @@ def contacto():
 
     flash(f"¡Gracias, {nombre}! Te esperamos en la apertura.", "success")
     return redirect(url_for("inicio") + "#visitanos")
+
+
+@app.route("/api/sabores.json")
+def api_sabores():
+    """Alimenta al componente de React con los datos de sabores en JSON."""
+    return jsonify(SABORES)
+
+
+@app.route("/api/galeria.json")
+def api_galeria():
+    """Alimenta a la galería interactiva de React en JSON."""
+    galeria_con_url = [
+        {**item, "imagen": url_for("static", filename=f"img/{item['imagen']}")}
+        for item in GALERIA
+    ]
+    return jsonify(galeria_con_url)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,12 @@
+[build]
+  command = "pip install -r requirements.txt && python freeze.py"
+  publish = "build"
+
+# Como el sitio es de una sola página con navegación por anclas (#sabores,
+# #visitanos, etc.), esta regla evita pantallas de error 404 si alguien
+# entra directo a una URL rara o recarga desde una ruta que no existe como
+# archivo físico.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 404

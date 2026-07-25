@@ -50,12 +50,51 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 5000);
   });
 
-  // Confetti al enviar el formulario de contacto
+  // Envío del formulario de contacto vía fetch (funciona igual con Flask
+  // corriendo en local, y con Netlify Forms una vez desplegado como
+  // sitio estático — ver la guía de Netlify para el detalle).
   const form = document.getElementById("contactForm");
   if (form) {
-    form.addEventListener("submit", () => {
-      launchConfetti();
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const datos = new FormData(form);
+      const cuerpo = new URLSearchParams(datos).toString();
+
+      fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: cuerpo,
+      })
+        .then(() => {
+          mostrarMensaje("¡Gracias! Te esperamos en la apertura.", "success");
+          launchConfetti();
+          form.reset();
+        })
+        .catch(() => {
+          mostrarMensaje("No pudimos enviar tu mensaje. Escríbenos por WhatsApp.", "error");
+        });
     });
+  }
+
+  function mostrarMensaje(texto, tipo) {
+    const stack = document.querySelector(".flash-stack") || (() => {
+      const el = document.createElement("div");
+      el.className = "flash-stack";
+      document.body.appendChild(el);
+      return el;
+    })();
+
+    const aviso = document.createElement("div");
+    aviso.className = `flash flash--${tipo}`;
+    aviso.textContent = texto;
+    stack.appendChild(aviso);
+
+    setTimeout(() => {
+      aviso.style.transition = "opacity 0.4s ease";
+      aviso.style.opacity = "0";
+      setTimeout(() => aviso.remove(), 400);
+    }, 5000);
   }
 
   function launchConfetti() {
